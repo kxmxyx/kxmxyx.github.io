@@ -9,7 +9,8 @@
   <meta name="author" content="Takeshi Kamiya">
 
   
-  <meta name="description" content=" Blog Archives ">
+  <meta name="description" content="これは ドリコム Advent Calendar 2014 の13日目の記事です。 12日目は motsat さんによる 今いるチームが、トラブルを少なくするためにやっている事（人間系）です。 自己紹介 twitter@k_m_y_
+2013年6月ドリコム入社 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +71,180 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/12/13/processing/">Processingで体験するサウンドアートの世界</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-12-13T00:30:54+09:00" pubdate data-updated="true"></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>これは <a href="http://www.adventar.org/calendars/518">ドリコム Advent Calendar 2014</a> の13日目の記事です。</p>
+
+<p>12日目は <a href="http://qiita.com/motsat">motsat</a> さんによる <a href="http://qiita.com/motsat/items/8937860108a2a20f76c1">今いるチームが、トラブルを少なくするためにやっている事（人間系）</a>です。</p>
+
+<h2>自己紹介</h2>
+
+<ul>
+<li><a href="https://twitter.com/k_m_y_">twitter@k_m_y_</a></li>
+<li>2013年6月ドリコム入社</li>
+<li>サーバサイドエンジニアとPMやってます。あと部長。</li>
+<li>Ruby暦は9年程、<a href="https://processing.org/">Processing</a>歴は7年程、club VJ歴は6年程</li>
+</ul>
+
+
+<p><img src="/images/2014-12-13/vj.jpg" width="640" height="480" title="VJ" alt="VJ">
+<br />CLASH@ageHaで披露したProgrammer3名による3面同時VJ（中央スクリーンが自分）</p>
+
+<p><img src="/images/2014-12-13/ui.jpg" width="640" height="480" title="UI" alt="UI">
+<br />VJ中の画面（場所は代官山Air）</p>
+
+<h2>本日の話</h2>
+
+<p>普段Processingを使ったVJをやっているので、Processingで手軽に体験できるサウンドアートの世界を紹介します。</p>
+
+<h2>なぜProcessingか</h2>
+
+<p><a href="http://www.kentarokobayashi.net/namikibashi/">NAMIKIBASHI</a>に影響を受け、映像制作について興味を持ち始める。
+Max/MSP/Jitterに何度も挑戦するが、Maxにどうしてもなじめず、Processingへ。（Max/MSP/Jitter高かったのに・・・）</p>
+
+<h2>cyclo.</h2>
+
+<p>2011年にリリースされたcyclo.（池田亮司とCarsten Nicolai(Alva Noto)によるユニット）のアルバム「id」</p>
+
+<p><img src="/images/2014-12-13/cyclo_id.jpg" title="Cyclo.id" alt="Cyclo.id"></p>
+
+<p>このCDには下記のような記述あります。</p>
+
+<blockquote><p>this record is not mastered in order to keep the original lissajous figures and locus of cycloid movement. to observe, please play on an xy phase scope. any data compression such as mp3 will distort this visualization.</p></blockquote>
+
+<p>Google先生による翻訳はこちら。</p>
+
+<blockquote><p>このレコードは、元のリサージュ図形とサイクロイド運動の軌跡を維持するために習得されていない。観察するために、 X-Yの位相範囲で再生してください。任意のデータ圧縮は、 MP3などのこの可視化が歪みます。</p></blockquote>
+
+<p>翻訳すると逆によく分からない感じになってしまいましたが、つまり、xy phase scope（リサージュ・メーター）でビジュアルが見れるよ、圧縮はするなよ、とのこと。</p>
+
+<p>（当時の自分）リサージュ・メーターなんて持ってないよなぁ・・・作るか。</p>
+
+<p>という訳で、作ったのがこれです。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kn">import</span> <span class="nn">ddf.minim.*</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Minim</span> <span class="n">minim</span><span class="o">;</span>
+</span><span class='line'><span class="n">AudioPlayer</span> <span class="n">out</span><span class="o">;</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">512</span><span class="o">;</span>
+</span><span class='line'><span class="kt">float</span> <span class="n">w</span> <span class="o">=</span>  <span class="n">s</span><span class="o">/</span><span class="mi">3</span><span class="o">;</span>
+</span><span class='line'><span class="n">String</span> <span class="n">file</span> <span class="o">=</span> <span class="s">&quot;id#00.wav&quot;</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">setup</span><span class="o">(){</span>
+</span><span class='line'>  <span class="n">size</span><span class="o">(</span><span class="n">s</span><span class="o">,</span> <span class="n">s</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">minim</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Minim</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">out</span> <span class="o">=</span> <span class="n">minim</span><span class="o">.</span><span class="na">loadFile</span><span class="o">(</span><span class="n">file</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">out</span><span class="o">.</span><span class="na">play</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">void</span> <span class="nf">draw</span><span class="o">(){</span>
+</span><span class='line'>  <span class="n">background</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">stroke</span><span class="o">(</span><span class="mi">255</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">translate</span><span class="o">(</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="o">,</span> <span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">rotate</span><span class="o">(-</span><span class="n">PI</span><span class="o">/</span><span class="mi">4</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">out</span><span class="o">.</span><span class="na">bufferSize</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">point</span><span class="o">(-</span><span class="n">out</span><span class="o">.</span><span class="na">right</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="o">*</span> <span class="n">w</span><span class="o">,</span> <span class="n">out</span><span class="o">.</span><span class="na">left</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="o">*</span> <span class="n">w</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">point</span><span class="o">(-</span><span class="n">out</span><span class="o">.</span><span class="na">right</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="o">*</span> <span class="n">w</span><span class="o">,</span> <span class="n">out</span><span class="o">.</span><span class="na">left</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="o">*</span> <span class="n">w</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ちなみに、数ヶ月後に発売した日本盤には全トラックの映像が付いてきます。こちらで作られる映像よりも繊細で奇麗です。</p>
+
+<p>※rotateは日本盤の映像と合わせるために後で入れました</p>
+
+<p>※音源は別途購入、又はレンタルしてきましょう</p>
+
+<h2>本家の動画を見る</h2>
+
+<p>実際の映像は池田さんのサイトで確認可能です。</p>
+
+<p><a href="http://www.ryojiikeda.com/project/cyclo/">http://www.ryojiikeda.com/project/cyclo/</a></p>
+
+<iframe src="//player.vimeo.com/video/73860675" width="500" height="500" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+
+<p> <p><a href="http://vimeo.com/73860675">cyclo. id#00 (Carsten Nicolai &amp; Ryoji Ikeda)</a> from <a href="http://vimeo.com/momapoprally">PopRally MoMA</a> on <a href="https://vimeo.com">Vimeo</a>.</p></p>
+
+<p>cyclo.のアルバムは音源を聴くだけでも十分楽しめる作品ですが、ビジュアルも合わせた方が圧倒的に楽しいのです。</p>
+
+<h2>手軽だからこそ、難しい</h2>
+
+<p>Processingは結局Javaコードに変換されます。
+追加したclassは全てPAppletを継承したメインclassのインナークラスとして定義されます。つまり、1アプリケーションは1つの巨大なclassからなります。ちょっとしたコードを書いて楽しむ分にはお手軽で良いのですが、大規模アプリケーションを組もうとすると結構大変。</p>
+
+<p>逆に考えると、この制約の中で実現するためにどうしたら良いか、色々設計に考えを巡らす必要があるので、プログラミング養成ギプスのような働きをするような、しないような。</p>
+
+<p>少なくとも自分にとっては、この制約の中でVJ用フレームワークを制作したことがプログラミングスキルの向上につながったのは間違い無いと思っています。</p>
+
+<h2>まとめ</h2>
+
+<p>ドリコムには多種多様なエンジニアが在籍しています。</p>
+
+<p>我々と共に活躍してくれる仲間を<a href="http://www.drecom.co.jp/recruit/">募集</a>しています。</p>
+
+<p>14日目は <a href="http://www.adventar.org/users/4641">gerry</a> です。</p>
+</div>
+  
+  
+
+
+    </article>
   
   <div class="pagination">
     
