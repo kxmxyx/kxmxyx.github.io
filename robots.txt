@@ -1,4 +1,4 @@
 User-agent: *
-Disallow: 
+Disallow:
 
-Sitemap: http://kxmxyx.github.io/sitemap.xml 
+Sitemap: http://kxmxyx.github.io/sitemap.xml
